@@ -9,8 +9,6 @@ class CfgFunctions {
 
 		class ClientFunctions {
 			file = "functions";
-
-			class radioInit {};
 		};
 
 		class HUDFunctions {

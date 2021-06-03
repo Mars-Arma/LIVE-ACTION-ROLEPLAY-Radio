@@ -8,5 +8,3 @@ enableTeamSwitch false;
 
 // Setup configuration
 call life_fnc_configuration;
-
-call life_fnc_radioInit;
