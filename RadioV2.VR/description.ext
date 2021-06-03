@@ -22,3 +22,16 @@ joinUnassigned = 0;
 #include "hud\common.hpp"
 #include "hud\dialog\dialog_master.hpp"
 #include "hud\rscTitles\rsc_titles_master.hpp"
+
+class CfgMusic
+{
+	tracks[] = {};
+	class MyIntro
+	{
+		// display name
+		//name = "Dreamin";
+
+		// filename, volume, pitch
+		//sound[]	= { "\music\Song1.ogg", db + 0, 1.0 };
+	};
+};
