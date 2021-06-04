@@ -22,6 +22,12 @@ addMusicEventHandler ["MusicStop", {
 		// Deletes the last played song to make sure it's not repeated
 		life_playlist deleteAt 0;
 		// plays next song in queue
+		if (life_playlist isEqualTo []) exitwith {
+			vehicle player setVariable ["life_radioIsOn", false];
+			_source = _vehicle getVariable ["life_radioSource", nil];
+			deleteVehicle _source;
+			playMusic "";
+		};
 		[Vehicle player] call life_fnc_playSongOnRadio;
     };
 
@@ -37,7 +43,7 @@ player addAction
 		params ["_target", "_caller", "_actionId", "_arguments"];
 
 		// turns on the music and shuffles it
-		life_playlist = [life_songs] call life_fnc_arrayShufflePlaylist;
+		life_playlist = [life_playlist] call life_fnc_arrayShufflePlaylist;
 		[Vehicle _caller] call life_fnc_playSongOnRadio;
 		
 		// Event handler on the vehicle itself
@@ -46,7 +52,7 @@ player addAction
 
 			// turns off music when player is no longer in car
 			if (_playerExited == player) then {
-				playMusic "";
+				0 fadeMusic 0.000001;
 			};
 		}];
 
@@ -84,19 +90,6 @@ player addAction
 	""
 ];
 
-// Function to start playing the music // Redundant now since I'm using 3D audio instead!
-life_fnc_playMusic = {
-	 params ["_life_radioNowPlaying"];
-
-
-    playMusic "";
-    playMusic [_life_radioNowPlaying, 0];
-    0 fadeMusic (100 / 100);
-
-	// calls displayTiles
-    [_life_radioNowPlaying] call life_fnc_displayTiles;
-};
-
 // this tracks down the other information for the song
 life_fnc_findTrackConfig = {
 	params ["_trackName"];
@@ -110,7 +103,7 @@ life_fnc_findTrackConfig = {
 			_return append _x select 1;
 			_return append _x select 2;
 		};
-	} forEach life_songs;
+	} forEach life_playlist;
 	// returns it to orignal call location
 	_return;
 };
@@ -169,7 +162,15 @@ life_fnc_playSongOnRadio = {
     // sets variable
     _vehicle setVariable ["life_radioIsOn", true, true];
 	
-	life_playlist = [life_songs] call life_fnc_arrayShufflePlaylist;
+	// set the playlist to a freshly shuffled queue
+	life_playlist = [[["News_backOnline", "Altis News", "Leila Alere"], ["News_Infection01", "Altis News", "Leila Alere"], ["News_Jingle", "", ""], 
+	["News_outBreak_Galili", "Altis News", "Leila Alere"], ["News_outBreak_Savaka", "Altis News", "Leila Alere"],
+	["News_weapons_prohibited", "Altis News", "Leila Alere"], ["News_checkpoints", "Altis News", "Leila Alere"], ["News_arrest", "Altis News", "Leila Alere"], 
+	["News_execution", "Altis News", "Leila Alere"], ["News_weapons", "Altis News", "Leila Alere"], ["News_house_destroyed", "Altis News", "Leila Alere"],
+	["News_Rescued", "Altis News", "Leila Alere"], ["Track_D_01", "Midnight dancing", "John McOliver"],
+	["Track_D_03", "Midnight dancing(part 2)", "John McOliver"], ["Track_P_02", "The Unknowns", "Rosalind Smith"], ["Track_P_13", "Quiet Oceans", "Jennifer Wan"],
+	["Track_P_16", "Nothing but Peace", "The Kavala Middle School Band"], ["Track_P_01", "Tanoa for the taking", "US army Band"],
+	["Track_P_09", "Tanoan March", "GeorgeTown Highschool Band"]]] call life_fnc_arrayShufflePlaylist;
 
 	// Call's the play music function
     [(life_playlist select 0) select 0, _vehicle] call life_fnc_Music3D;
@@ -217,10 +218,6 @@ life_fnc_stopSongOnRadio = {
 };
 
 
-// Makes sure life_radioNowPlaying is not nil
-if (isNil "life_radioNowPlaying") then {
-    life_radioNowPlaying = "";
-};
 
 
 
