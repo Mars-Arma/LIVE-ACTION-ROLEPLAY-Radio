@@ -179,14 +179,12 @@ life_fnc_playSongOnRadio = {
 life_fnc_Music3D = {
     params ["_track","_vehicle"];
 
-	// Plays the song on the vehicle in 3D
-
+	// Creates location for where sound will be created from
 	_source = "land_HelipadEmpty_F" createVehicle position vehicle player;
     _source attachTo [_vehicle,[0,0,0]];
 
-
-    _source say3D [_track, 15, 1, true, 0];
-	
+	// Calls it globally so all gamers will be able to hear the radio coming from the car, so long their within the set distance (15 meters)
+	[[_source, [_track, 15, 1, true, 0]], "say3D", true, false, true] call BIS_fnc_MP;
 
 	// I'm doing this so that when the current song is done i'll be able to use the MusicEventHandler to play a song right after // Probably a better way :(
 	playMusic _track;
