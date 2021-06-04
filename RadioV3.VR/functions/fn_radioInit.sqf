@@ -2,38 +2,27 @@
 // Author: Infamous
 // Description: Sets up the radio system to be used in ground vehicles
 
-// Event handler for when someone gets into a vehicle
+
 player addEventHandler ["GetInMan", {
     params ["_vehicle", "", "_playerEntered"];
 
 	// checks if the radio is on when the player gets in and plays music if so
-    if (_playerEntered == vehicle player) then {
-        if (vehicle player getVariable ["life_radioIsOn", nil] == true) then {
-			life_playlist = [life_songs] call life_fnc_arrayShufflePlus;
-			[Vehicle _caller] call life_fnc_playSongOnRadio;
-		// else makes sure the value is not nil and sets it to false
-        } else {vehicle player setVariable ["life_radioIsOn", false]};
+    if (_playerEntered == vehicle player && (driver vehicle player) == player) then {
+        if (vehicle player getVariable ["life_radioIsOn", false] == false) then {
+			vehicle player setVariable ["life_radioIsOn", false]
+		};
     };
-}];
-
-// Event handler for when Player gets out of vehicle
-player addEventHandler ["GetOut", {
-    params ["_vehicle", "", "_playerEntered"];
-	
-	// Turns their music off when they jump out
-	[Vehicle player] call life_fnc_stopSongOnRadio;
-
 }];
 
 // Event handler for when The current track ends
 addMusicEventHandler ["MusicStop", {
 
 	// Checks if player is still in the vehicle and radio is on
-	if (Vehicle player isKindOf "Car" && Vehicle player getVariable ["life_radioIsOn", nil]) then {
+	if (Vehicle player isKindOf "Car" && Vehicle player getVariable ["life_radioIsOn", nil] && (driver vehicle player) == player) then {
 		// Deletes the last played song to make sure it's not repeated
 		life_playlist deleteAt 0;
 		// plays next song in queue
-		[Vehicle _caller] call life_fnc_playSongOnRadio;
+		[Vehicle player] call life_fnc_playSongOnRadio;
     };
 
 
@@ -48,7 +37,7 @@ player addAction
 		params ["_target", "_caller", "_actionId", "_arguments"];
 
 		// turns on the music and shuffles it
-		life_playlist = [life_songs] call life_fnc_arrayShufflePlus;
+		life_playlist = [life_songs] call life_fnc_arrayShufflePlaylist;
 		[Vehicle _caller] call life_fnc_playSongOnRadio;
 		
 		// Event handler on the vehicle itself
@@ -81,7 +70,7 @@ player addAction
 		params ["_target", "_caller", "_actionId", "_arguments"];
 
 		// turns off music
-		[Vehicle _caller] call life_fnc_stopSongOnRadio;
+		[Vehicle player] call life_fnc_stopSongOnRadio;
 	},
 	nil,
 	1.5,
@@ -95,7 +84,7 @@ player addAction
 	""
 ];
 
-// Function to start playing the music
+// Function to start playing the music // Redundant now since I'm using 3D audio instead!
 life_fnc_playMusic = {
 	 params ["_life_radioNowPlaying"];
 
@@ -156,7 +145,7 @@ life_fnc_displayTiles = {
 };
 
 // Shuffle the playlist so it's not always the same 
-life_fnc_arrayShufflePlus = {
+life_fnc_arrayShufflePlaylist = {
     private ["_arr", "_cnt"];
 
 	// get array and count it's length
@@ -179,22 +168,53 @@ life_fnc_playSongOnRadio = {
 
     // sets variable
     _vehicle setVariable ["life_radioIsOn", true, true];
-    
+	
+	life_playlist = [life_songs] call life_fnc_arrayShufflePlaylist;
+
 	// Call's the play music function
-    [(life_playlist select 0) select 0] call life_fnc_playMusic;
+    [(life_playlist select 0) select 0, _vehicle] call life_fnc_Music3D;
+    
+};
+
+life_fnc_Music3D = {
+    params ["_track","_vehicle"];
+
+	// Plays the song on the vehicle in 3D
+
+	_source = "land_HelipadEmpty_F" createVehicle position vehicle player;
+    _source attachTo [_vehicle,[0,0,0]];
+
+
+    _source say3D [_track, 15, 1, true, 0];
+	
+
+	// I'm doing this so that when the current song is done i'll be able to use the MusicEventHandler to play a song right after // Probably a better way :(
+	playMusic _track;
+	0 fadeMusic 0.2;
+
+	// sets variable
+    _vehicle setVariable ["life_radioIsOn", true, true];
+	_vehicle setVariable ["life_radioSource", _source, true];
+    
+
+	// calls tiles to showcase the song being played
+    [_track] call life_fnc_displayTiles;
     
 };
 
 // stops the song
 life_fnc_stopSongOnRadio = {
-    params ["_vehicle"];
+    params ["_vehicle", "_track"];
 
     // Set the variable that the cars radio is off
 	_vehicle setVariable ["life_radioIsOn", false, true];
 
 	// turns off radio
     if (player in crew _vehicle) then {
-        playMusic "";
+		// deletes sound source and turns off the radio
+		_source = _vehicle getVariable ["life_radioSource", nil];
+		deleteVehicle _source;
+		 playMusic "";
     };
 };
 
