@@ -5,7 +5,8 @@ Life_Songs = [["News_backOnline", "Altis News", "Leila Alere"], ["News_Infection
 ["News_malaria_lugganville_secured", "Altis News", "Leila Alere"], ["News_Rescued", "Altis News", "Leila Alere"], ["Track_D_01", "Midnight dancing", "John McOliver"],
 ["Track_D_03", "Midnight dancing(part 2)", "John McOliver"], ["Track_P_02", "The Unknowns", "Rosalind Smith"], ["Track_P_13", "Quiet Oceans", "Jennifer Wan"],
 ["Track_P_014", "Relaxed Atlast", "James Fender"], ["Track_P_16", "Nothing but Peace", "The Kavala Middle School Band"], ["Track_P_01", "Tanoa for the taking", "US army Band"],
-["Track_P_09", "Tanoan March", "GeorgeTown Highschool Band"]
+["Track_P_09", "Tanoan March", "GeorgeTown Highschool Band"], ["Track05_Underwater2", "Underwater", "AFF Royal Band"], ["Track04_Underwater1", "Underwater", "AFF Royal Band"], 
+["Track03_OnTheRoad", "On the Road", "Aiden Manns"]
 ];
 
 life_playlist = []
