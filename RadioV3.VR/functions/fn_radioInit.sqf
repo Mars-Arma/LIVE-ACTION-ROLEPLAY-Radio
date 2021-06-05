@@ -42,8 +42,7 @@ player addAction
 	{
 		params ["_target", "_caller", "_actionId", "_arguments"];
 
-		// turns on the music and shuffles it
-		life_playlist = [life_playlist] call life_fnc_arrayShufflePlaylist;
+		// turns on the music
 		[Vehicle _caller] call life_fnc_playSongOnRadio;
 		
 		// Event handler on the vehicle itself
@@ -142,7 +141,6 @@ life_fnc_arrayShufflePlaylist = {
     private ["_arr", "_cnt"];
 
 	// get array and count it's length
-	life_playlist = [];
     _arr = _this select 0;
     _cnt = count _arr;
 
@@ -163,6 +161,7 @@ life_fnc_playSongOnRadio = {
     _vehicle setVariable ["life_radioIsOn", true, true];
 	
 	// set the playlist to a freshly shuffled queue
+	life_playlist = [];
 	life_playlist = [[["News_backOnline", "Altis News", "Leila Alere"], ["News_Infection01", "Altis News", "Leila Alere"], ["News_Jingle", "", ""], 
 	["News_outBreak_Galili", "Altis News", "Leila Alere"], ["News_outBreak_Savaka", "Altis News", "Leila Alere"],
 	["News_weapons_prohibited", "Altis News", "Leila Alere"], ["News_checkpoints", "Altis News", "Leila Alere"], ["News_arrest", "Altis News", "Leila Alere"], 
