@@ -162,7 +162,7 @@ life_fnc_playSongOnRadio = {
     _vehicle setVariable ["life_radioIsOn", true, true];
 	
 	// set the playlist to a freshly shuffled queue
-	_playlist = [[["News_Jingle", "", ""], ["News_Infection01", "Altis News", "Leila Alere"], 
+	_playlist = [[["News_Infection01", "Altis News", "Leila Alere"], 
 	["News_outBreak_Galili", "Altis News", "Leila Alere"], ["News_outBreak_Savaka", "Altis News", "Leila Alere"],
 	["News_weapons_prohibited", "Altis News", "Leila Alere"], ["News_checkpoints", "Altis News", "Leila Alere"], ["News_arrest", "Altis News", "Leila Alere"], 
 	["News_execution", "Altis News", "Leila Alere"], ["News_weapons", "Altis News", "Leila Alere"], ["News_house_destroyed", "Altis News", "Leila Alere"],
